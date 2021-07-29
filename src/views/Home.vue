@@ -52,16 +52,16 @@
         <b-table-column field="CreatedAt" label="CreatedAt" v-slot="props">
           {{ props.row.CreatedAt }}
         </b-table-column>
+        <b-table-column field="" label="" v-slot="props">
+          <b-button type="is-danger" icon-right="trash" @click="confirmCustomDelete(props.row.Uid)"/>
+        </b-table-column>
 
         <template #detail="props">
           <div class="columns">
             <div class="column is-one-third">
               <div class="box">
-                <b-field
-                  label="Username"
-                  type="is-success"
-                  message="This username is available"
-                >
+                {{ props.row }}
+                <b-field label="Username">
                   <b-input
                     v-bind:value="props.row.username"
                     maxlength="30"
@@ -104,12 +104,60 @@ export default {
     addCredential() {
       this.$router.push("/addnewcredential");
     },
+    confirmCustomDelete(credentialUid) {
+          this.$buefy.dialog.confirm({
+              title: 'Deleting credential',
+              message: 'Are you sure you want to <b>delete</b> this credential? This action cannot be undone.',
+              confirmText: 'Delete',
+              type: 'is-danger',
+              hasIcon: true,
+              onConfirm: () => {
+
+      const axios = require("axios");
+
+      firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+          this.userId = user.uid;
+
+          user.getIdToken().then((token) => {
+            const req = axios.create({
+              baseURL: "https://pass.engineerbeard.com",
+              headers: {
+                Authorization: "Bearer " + token,
+              },
+            });
+
+            req
+              .delete("/users/credentials/" + credentialUid, {})
+              .then(() => {
+                // response availbable here in arrow function
+                this.$buefy.toast.open('Credential deleted!')
+                //   this.data = response.data;
+                this.$router.push("/");
+              })
+              .catch((error) => {
+                console.log(error);
+              })
+              .then(() => {
+                // always executed
+              });
+          });
+        } else {
+          this.$router.push("/");
+        }
+      });
+
+
+
+                }
+          })
+      },
   },
   mounted() {
     const pwhash = crypto.createHash("sha256").update("hello").digest("base64");
     var enc = Encrypt(pwhash, "hello world");
-    console.log(JSON.stringify(enc))
-    console.log(JSON.parse(JSON.stringify(enc)))
+    console.log(JSON.stringify(enc));
+    console.log(JSON.parse(JSON.stringify(enc)));
     console.log(Decrypt(pwhash, enc));
     const axios = require("axios");
 
