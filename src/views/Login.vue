@@ -49,7 +49,12 @@ export default {
           this.$router.push({ path: "/" });
         })
         .catch((err) => {
-          console.log(err.message);
+          console.log(err)
+          this.$buefy.toast.open({
+            message: err.message,
+            type: "is-warning",
+            duration: 5000,
+          });
         });
     },
   },

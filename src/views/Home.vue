@@ -16,10 +16,9 @@
               <div class="content">
                 <p>
                   <strong>Welcome </strong>
-                  <br />
+                  <!-- <br />
                   <small>{{ userId }}@</small>
-                  <br />
-                  Hello world
+                  <br /> -->
                 </p>
               </div>
             </div>
@@ -53,14 +52,14 @@
           {{ props.row.CreatedAt }}
         </b-table-column>
         <b-table-column field="" label="" v-slot="props">
-          <b-button type="is-danger" icon-right="trash" @click="confirmCustomDelete(props.row.Uid)"/>
+          <b-button type="is-danger" icon-right="minus-circle" @click="confirmCustomDelete(props.row.Uid)"/>
         </b-table-column>
 
         <template #detail="props">
           <div class="columns">
             <div class="column is-one-third">
               <div class="box">
-                {{ props.row }}
+                <!-- {{ props.row }} -->
                 <b-field label="Username">
                   <b-input
                     v-bind:value="props.row.username"
